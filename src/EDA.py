@@ -78,38 +78,46 @@ def boxplot_dataframe(df, ncols=3):
 
 
 def plot_histogram(df, ncols=3):
-    """Docstring for plot_histogram
-    
+    """
     Plot histogram for all columns in dataframe with adjustment to datatype.
     
     Parameters:
     - df: pandas DataFrame containing the data.
     - ncols: Number of columns in the plot grid (default is 3).
     """
-    ncols = ncols   
-    nrows = (len(df.columns) + ncols - 1) // ncols # Automatic calculate number of rows
+    # Separate numeric and object columns
+    numeric_columns = df.select_dtypes(exclude='object').columns.tolist()
+    object_columns = df.select_dtypes(include='object').columns.tolist()
 
-    # create subplots
+    # Combine numeric and object columns, with numeric columns first
+    all_columns = numeric_columns + object_columns
+
+    # Calculate number of rows for grid
+    nrows = (len(all_columns) + ncols - 1) // ncols
+
+    # Create subplots
     fig, axes = plt.subplots(nrows, ncols, figsize=(ncols*5, nrows*5))
 
     # Flatten axes for looping
     axes = axes.flatten()
 
-    # Iterate over all columns in dataframe
-    for i, col in enumerate(df.columns):
+    # Iterate over all columns in the desired order
+    for i, col in enumerate(all_columns):
         ax = axes[i]
-        if df[col].dtype == 'object' or df[col].dtype.name == 'category':
-            sns.countplot(x=col, data=df, ax=ax, palette='Set2')
+        if col in object_columns:
+            #  Sort the categories by frequency
+            sorted_categories = df[col].value_counts().index
+            sns.countplot(x=col, data=df, ax=ax, order=sorted_categories)
             ax.set_title(f"Count plot of {col}")
             ax.set_xlabel(col)
             ax.set_ylabel('Count')
         else:
-            sns.histplot(df[col], ax=ax, kde=True, bins=20, color='skyblue')
+            sns.histplot(df[col], ax=ax, kde=True, bins=20, color='skyblue', line_kws={'color': 'red'})
             ax.set_title(f"Histogram of {col}")
             ax.set_xlabel(col)
             ax.set_ylabel('Frequency')
 
-    # remove unused subplot
+    # Remove any unused subplot
     for j in range(i+1, len(axes)):
         fig.delaxes(axes[j])
 

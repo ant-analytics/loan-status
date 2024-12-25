@@ -1,4 +1,4 @@
-olumn	Description	Type
+Column	Description	Type
 person_age	Age of the person	Float
 person_gender	Gender of the person	Categorical
 person_education	Highest education level	Categorical
