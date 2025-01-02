@@ -1,14 +1,14 @@
-person_age	Age of the person	Float
-person_gender	Gender of the person	Categorical
-person_education	Highest education level	Categorical
-person_income	Annual income	Float
-person_emp_exp	Years of employment experience	Integer
-person_home_ownership	Home ownership status (e.g., rent, own, mortgage)	Categorical
-loan_amnt	Loan amount requested	Float
-loan_intent	Purpose of the loan	Categorical
-loan_int_rate	Loan interest rate	Float
-loan_percent_income	Loan amount as a percentage of annual income	Float
-cb_person_cred_hist_length	Length of credit history in years	Float
-credit_score	Credit score of the person	Integer
-previous_loan_defaults_on_file	Indicator of previous loan defaults	Categorical
-loan_status (target variable)	Loan approval status: 1 = approved; 0 = rejected	Integer
+person_age	Age of the Person	Float
+person_gender	Gender of the Person	Categorical
+person_education	Highest Education Level	Categorical
+person_income	Annual Income	Float
+person_emp_exp	Years of Employment Experience	Integer
+person_home_ownership	Home Ownership Status 	Categorical
+loan_amnt	Loan Amount Requested	Float
+loan_intent	Purpose of the Loan	Categorical
+loan_int_rate	Loan Interest Rate	Float
+loan_percent_income	Loan Amount as a Percentage of Annual Income	Float
+cb_person_cred_hist_length	Length of Credit History in Years	Float
+credit_score	Credit Score of the Person	Integer
+previous_loan_defaults_on_file	Indicator of Previous Loan Defaults	Categorical
+loan_status (target variable)	Loan Approval Status: 1 = approved; 0 = rejected	Integer
