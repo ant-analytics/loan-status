@@ -2,23 +2,74 @@ from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 
-
 def split_data(raw_data):
-    X = raw_data.drop(['loan_status'], axis=1)
-    y = raw_data['loan_status']
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.5, random_state=42, stratify=y)
-    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42, stratify=y_temp)
-    return X_train, X_val, X_test, y_train, y_val, y_test
+    """
+    Splits the raw data into training, validation, and test sets.
 
-def preprocess_data(X_train, X_val, X_test, num_features, cat_features):
+    Parameters:
+    raw_data (pd.DataFrame): The raw data containing features and the target variable 'loan_status', 'credit_score'.
+
+    Returns:
+    tuple: A tuple containing the following elements:
+        - X_train (pd.DataFrame): Training set features.
+        - X_val (pd.DataFrame): Validation set features.
+        - X_test (pd.DataFrame): Test set features.
+        - y_train_loan_status (pd.Series): Training set target variable 'loan_status'.
+        - y_val_loan_status (pd.Series): Validation set target variable 'loan_status'.
+        - y_test_loan_status (pd.Series): Test set target variable 'loan_status'.
+        - y_train_score (pd.Series): Training set target variable 'credit_score'.
+        - y_val_score (pd.Series): Validation set target variable 'credit_score'.
+        - y_test_score (pd.Series): Test set target variable 'credit_score'.
+    """
+    X = raw_data.drop(['loan_status', 'credit_score'], axis=1)
+    y = raw_data[['loan_status', 'credit_score']]
+    
+    X_temp, X_test, y_temp, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y['loan_status'])
+    X_train, X_val, y_train, y_val = train_test_split(X_temp, y_temp, test_size=0.4, random_state=42, stratify=y_temp['loan_status'])
+    
+    y_train_loan_status = y_train['loan_status']
+    y_val_loan_status = y_val['loan_status']
+    y_test_loan_status = y_test['loan_status']
+    
+    y_train_score = y_train['credit_score']
+    y_val_score = y_val['credit_score']
+    y_test_score = y_test['credit_score']
+    
+    return X_train, X_val, X_test, y_train_loan_status, y_val_loan_status, y_test_loan_status, y_train_score, y_val_score, y_test_score
+
+def preprocess_data(X_train, X_val, X_test, y_train_score, y_val_score, y_test_score, num_features, cat_features):
+    """
+    Preprocesses the training, validation, and test datasets by applying scaling to numerical features
+    and encoding to categorical features. Also scales the target variable 'credit_score'.
+
+    Parameters:
+    X_train (pd.DataFrame): Training dataset.
+    X_val (pd.DataFrame): Validation dataset.
+    X_test (pd.DataFrame): Test dataset.
+    y_train_score (pd.Series): Training set target variable 'credit_score'.
+    y_val_score (pd.Series): Validation set target variable 'credit_score'.
+    y_test_score (pd.Series): Test set target variable 'credit_score'.
+    num_features (list of str): List of numerical feature names.
+    cat_features (list of str): List of categorical feature names.
+
+    Returns:
+    tuple: Transformed training, validation, and test datasets, transformed target variables, and the fitted ColumnTransformer and StandardScaler.
+    """
     col_transformer = ColumnTransformer(
         transformers=[
-            ('num', StandardScaler(), [feature for feature in num_features if feature != 'loan_status']),
+            ('num', StandardScaler(), [feature for feature in num_features if feature not in ['loan_status', 'credit_score']]),
             ('cat', OrdinalEncoder(), cat_features)], remainder='passthrough')
+    
     X_train_transform = col_transformer.fit_transform(X_train)
     X_val_transform = col_transformer.transform(X_val)
     X_test_transform = col_transformer.transform(X_test)
-    return X_train_transform, X_val_transform, X_test_transform
+    
+    y_scaler = StandardScaler()
+    y_train_score_transform = y_scaler.fit_transform(y_train_score.values.reshape(-1, 1))
+    y_val_score_transform = y_scaler.transform(y_val_score.values.reshape(-1, 1))
+    y_test_score_transform = y_scaler.transform(y_test_score.values.reshape(-1, 1))
+    
+    return X_train_transform, X_val_transform, X_test_transform, y_train_score_transform, y_val_score_transform, y_test_score_transform, col_transformer, y_scaler
 
 
 def load_and_remove_nan(file_path):
@@ -42,8 +93,6 @@ def load_and_remove_nan(file_path):
     return raw_data, analysis_data
 
 # Stratified sampling
-from sklearn.model_selection import train_test_split
-
 def stratified_sampling(df, stratify_columns, target_column, test_size=0.2, random_state=42):
     """
     Perform stratified sampling on the DataFrame based on multiple features.
@@ -75,7 +124,7 @@ def stratified_sampling(df, stratify_columns, target_column, test_size=0.2, rand
     
     return X_train, X_test, y_train, y_test
 
-def split_data(data, target, stratify_feature=None, test_size=0.25, val_size=0.25, random_state=42):
+def split_data_2(data, target, stratify_feature=None, test_size=0.25, val_size=0.25, random_state=42):
     """Docstring for split_data
     Split dataset into training, validation, and test sets    
     :param data: The dataset to split

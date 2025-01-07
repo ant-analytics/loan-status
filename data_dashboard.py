@@ -21,7 +21,6 @@ import matplotlib.pyplot as plt
 import matplotlib.style
 matplotlib.style.use('seaborn-v0_8-whitegrid') # Set global theme style
 
-
 # Calculate descriptive statistics
 desc_stats = raw_data.describe().T[['min', 'mean', 'std', 'max']].sort_values(by='max', ascending=False).applymap(lambda x: f'{x:,.2f}')
 
