@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder, Normalizer, normalize
 
 def split_data(raw_data):
     """
@@ -65,11 +65,27 @@ def preprocess_data(X_train, X_val, X_test, y_train_score, y_val_score, y_test_s
     X_test_transform = col_transformer.transform(X_test)
     
     y_scaler = StandardScaler()
-    y_train_score_transform = y_scaler.fit_transform(y_train_score.values.reshape(-1, 1))
+    y_train_score_transform = y_scaler.fit_transform(y_train_score.values.reshape(-1, 1)) # reshape to 2D array
     y_val_score_transform = y_scaler.transform(y_val_score.values.reshape(-1, 1))
     y_test_score_transform = y_scaler.transform(y_test_score.values.reshape(-1, 1))
     
     return X_train_transform, X_val_transform, X_test_transform, y_train_score_transform, y_val_score_transform, y_test_score_transform, col_transformer, y_scaler
+
+
+def X_features(col_transformer):
+    """
+    Extracts the feature names after transformation from the ColumnTransformer.
+
+    Parameters:
+    col_transformer (ColumnTransformer): The fitted ColumnTransformer.
+
+    Returns:
+    list: List of feature names after transformation.
+    """
+    x = col_transformer.get_feature_names_out()
+    feature_names = [x.replace('num__', '').replace('cat__', '') for x in x]
+
+    return feature_names
 
 
 def load_and_remove_nan(file_path):
