@@ -1,6 +1,7 @@
 from tensorflow import keras
 from tensorflow.keras import layers
 import keras_tuner
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 import datetime
 
 # Define the model architecture
@@ -75,27 +76,26 @@ def build_hyper_model(hp):
     activation = hp.Choice('activation', values=['relu', 'tanh', 'sigmoid'], default='relu')
     optimizers = hp.Choice('optimizers', values=['adam', 'sgd'], default='adam')
     lr = hp.Float('lr', min_value=1e-4, max_value=1e-2, sampling='LOG', default=1e-3)
-    input_shape = (12,)
+    # scaler_choice = hp.Choice('scaler', values=['StandardScaler', 'MinMaxScaler', 'RobustScaler'], default='StandardScaler')
+
+    # #  apply the chosen scaler
+    # if scaler_choice == 'StandardScaler':
+    #     scaler = StandardScaler()
+    # elif scaler_choice == 'MinMaxScaler':
+    #     scaler = MinMaxScaler()
+    # else:
+    #     scaler = RobustScaler()
+    
+    # # scale the data
+    # X_train_transform = scaler.fit_transform(X_train)
+    # X_val_transform = scaler.transform(X_val)
+
+    # y_train_score_transform = scaler.fit_transform(y_train_score)
+    # y_val_score_transform = scaler.transform(y_val_score)
+
 
     # Build the model
+    input_shape = (12,)
     model = model_architecture(input_shape, units, activation, num_layers, optimizers, lr)
 
     return model
-
-
-# Define the callbacks
-# log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-# tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-
-# checkpoint_callback = keras.callbacks.ModelCheckpoint(
-#     filepath='model_checkpoint.keras',
-#     save_best_only=True,
-#     monitor='val_loss',
-#     mode='min'
-# )
-
-# early_stop_callback = keras.callbacks.EarlyStopping(
-#     monitor='val_loss',
-#     patience=3,
-#     mode='min'
-# )

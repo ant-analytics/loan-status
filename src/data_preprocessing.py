@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder, Normalizer, normalize
-
+random_state = 42
 def split_data(raw_data):
     """
     Splits the raw data into training, validation, and test sets.
@@ -24,8 +24,8 @@ def split_data(raw_data):
     X = raw_data.drop(['loan_status', 'credit_score'], axis=1)
     y = raw_data[['loan_status', 'credit_score']]
     
-    X_temp, X_test, y_temp, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y['loan_status'])
-    X_train, X_val, y_train, y_val = train_test_split(X_temp, y_temp, test_size=0.4, random_state=42, stratify=y_temp['loan_status'])
+    X_temp, X_test, y_temp, y_test = train_test_split(X, y, test_size=0.2, random_state=random_state, stratify=y['loan_status'])
+    X_train, X_val, y_train, y_val = train_test_split(X_temp, y_temp, test_size=0.4, random_state=random_state, stratify=y_temp['loan_status'])
     
     y_train_loan_status = y_train['loan_status']
     y_val_loan_status = y_val['loan_status']
@@ -72,7 +72,7 @@ def preprocess_data(X_train, X_val, X_test, y_train_score, y_val_score, y_test_s
     return X_train_transform, X_val_transform, X_test_transform, y_train_score_transform, y_val_score_transform, y_test_score_transform, col_transformer, y_scaler
 
 
-def X_features(col_transformer):
+def transform_features(col_transformer):
     """
     Extracts the feature names after transformation from the ColumnTransformer.
 

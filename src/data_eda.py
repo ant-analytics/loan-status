@@ -17,11 +17,25 @@ def describe_data(df):
     :param df: input dateframe
     :type df: dataframe
     an adavanced version of pd.describe function """
-    print(f"Key information about dataset")
+    
     advance_describe = df.describe(include='all')
     advance_describe.loc['dtype'] = df.dtypes
     advance_describe.loc['NaN count'] = df.isnull().sum()
+
     return advance_describe
+
+def dataframe_to_markdown(df):
+    """
+    Convert a pandas DataFrame to a markdown table format.
+
+    Parameters:
+    df (pandas.DataFrame): The DataFrame to convert.
+
+    Returns:
+    str: The markdown table as a string.
+    """
+    markdown = df.to_markdown(index=False)
+    return markdown
 
 def remove_outliers(df):
     """
