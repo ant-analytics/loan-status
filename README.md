@@ -1,1 +1,0 @@
-https://www.kaggle.com/datasets/taweilo/loan-approval-classification-data/data?select=loan_data.csv
