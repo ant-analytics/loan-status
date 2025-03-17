@@ -6,7 +6,7 @@ pip install -r requirement_pip.txt
 Alternatively, you can use Conda to install the packages:
 
 ```bash
-conda install --file requirement_codna.txt
+conda install --file requirement_conda.txt
 ```
 
 You can find the full report in the following Jupyter Notebook: [notebooks/report.ipynb](notebooks/report.ipynb)
